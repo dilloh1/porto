@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  const API_KEY = "lbas_a356c42e13544f4a9e5b30984ac19a69";
+  const API_KEY = "lbas_8a0c3ba717e648509eafb07e1ed45ecc";
   const BASE_URL = `https://db.padilolo.my.id/api/v1/${API_KEY}/tables/projects`;
 
   // 1. AMBIL DATA (GET)
