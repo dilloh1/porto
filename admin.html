@@ -82,13 +82,21 @@
                 const formdata = new FormData();
                 formdata.append('image', fileInput.files[0]); // field name 'image'
 
-                // Use local proxy endpoint to avoid CORS issues and keep API key secret
                 const cdnRes = await fetch('/api/upload', {
                     method: 'POST',
                     body: formdata
                 });
 
-                const cdnData = await cdnRes.json();
+                const contentType = cdnRes.headers.get('content-type') || '';
+                let cdnData;
+                if (contentType.includes('application/json')) {
+                    cdnData = await cdnRes.json();
+                } else {
+                    const text = await cdnRes.text();
+                    console.error('Expected JSON response from /api/upload, got:', text);
+                    throw new Error('Respons dari /api/upload bukan JSON. Pastikan endpoint tersedia di domain ini dan sudah deploy di Vercel.');
+                }
+
                 if (!cdnRes.ok) {
                     console.error('Upload proxy error:', cdnData);
                     throw new Error(cdnData.message || 'Gagal mengunggah file gambar ke CDN Cloud.');
