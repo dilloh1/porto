@@ -8,7 +8,7 @@ async function loadProjects() {
   if (!container) return;
 
   try {
-    // Memanggil endpoint backend Vercel (Bebas CORS)
+    // Memanggil endpoint backend Vercel (Terbebas dari CORS & data otomatis rapi)
     const res = await fetch('/api/get_projects');
     if (!res.ok) throw new Error('Respon server backend bermasalah');
     
@@ -16,10 +16,11 @@ async function loadProjects() {
     const projects = result.data || [];
 
     if (projects.length === 0) {
-      container.innerHTML = `<p style="text-align:center; padding:40px; font-weight:700; color:var(--saweria-dark);">Belum ada proyek yang terdaftar.</p>`;
+      container.innerHTML = `<p style="text-align:center; padding:40px; font-weight:700; color:#121212;">Belum ada proyek yang terdaftar.</p>`;
       return;
     }
 
+    // Render komponen kartu proyek dari data objek yang sudah bersih
     container.innerHTML = projects.map((p, index) => `
       <article class="project-card reveal">
         <div class="project-thumb">
@@ -40,13 +41,13 @@ async function loadProjects() {
       </article>
     `).join('');
     
-    // Pasang ulang trigger animasi kemunculan Neo-Brutalisme
+    // Pasang kembali IntersectionObserver untuk memicu animasi scroll reveal Neo-Brutalisme
     const newReveals = container.querySelectorAll('.reveal');
     newReveals.forEach(el => revealObserver.observe(el));
 
   } catch (err) {
     console.error("Gagal memuat proyek:", err);
-    container.innerHTML = `<p style="text-align:center; padding:20px; color:var(--saweria-dark); font-weight:700;">Gagal memuat proyek dari database.</p>`;
+    container.innerHTML = `<p style="text-align:center; padding:20px; color:#121212; font-weight:700;">Gagal memuat proyek dari database.</p>`;
   }
 }
 

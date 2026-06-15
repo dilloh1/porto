@@ -30,7 +30,7 @@
         <label for="description">Deskripsi</label>
         <textarea id="description" rows="4" placeholder="Penjelasan singkat mengenai fitur proyek..." required></textarea>
         
-        <label for="image_file">Unggah Gambar Lokal (Maks 10MB)</label>
+        <label for="image_file">Unggah Gambar (Otomatis CDN)</label>
         <input type="file" id="image_file" accept="image/*" required>
         <span class="file-status" id="uploadStatus">Belum ada file dipilih</span>
         
@@ -74,11 +74,11 @@
             try {
                 btnSubmit.disabled = true;
                 btnSubmit.innerText = "Mengunggah Gambar...";
-                uploadStatus.innerText = "Mengirim gambar ke CDN Server...";
+                uploadStatus.innerText = "Mengirim berkas ke infrastruktur CDN...";
 
-                // --- PROSES 1: UPLOAD KE CDN SESUAI DOKUMEN ---
+                // --- PROSES 1: UPLOAD KE CDN (MENGGUNAKAN FORM DATA SESUAI DOKUMEN KAMU) ---
                 const formdata = new FormData();
-                formdata.append("image", fileInput.files[0]); // Menggunakan field 'image' sesuai dokumentasi
+                formdata.append("image", fileInput.files[0]); // field name wajib 'image' sesuai spesifikasi dokumen
 
                 const cdnRes = await fetch(`https://db.padilolo.my.id/api/v1/${API_KEY}/upload`, {
                     method: "POST",
@@ -87,19 +87,19 @@
 
                 const cdnData = await cdnRes.json();
                 
+                // Cek status keberhasilan upload berdasarkan struktur respons dokumen
                 if (!cdnData.success || !cdnData.file?.cdnUrl) {
-                    throw new Error("Gagal mengunggah ke CDN. Periksa format berkas atau status server.");
+                    throw new Error("Gagal mengunggah file gambar ke CDN Cloud.");
                 }
 
-                // Ambil link url langsung dari respons struktur dokumen data.file.cdnUrl
                 const uploadedImageUrl = cdnData.file.cdnUrl;
-                uploadStatus.innerText = "Gambar sukses ter-hosting! Menyimpan data proyek...";
+                uploadStatus.innerText = "Gambar ter-hosting di CDN! Menyimpan entitas data...";
 
-                // --- PROSES 2: SIMPAN DATA PROYEK KE SQLITE ---
+                // --- PROSES 2: SIMPAN SELURUH ENTITAS DATA PROYEK KE SQLITE VIA VERCEL PROXY ---
                 const dataProyek = {
                     title: document.getElementById('title').value,
                     description: document.getElementById('description').value,
-                    image_url: uploadedImageUrl,
+                    image_url: uploadedImageUrl, // Menyimpan tautan permanen CDN yang ringan
                     link_project: document.getElementById('link_project').value
                 };
 
@@ -110,11 +110,11 @@
                 });
                 
                 if (res.ok) {
-                    alert("Sukses! Proyek baru & gambar CDN berhasil masuk cloud!");
+                    alert("Sukses! Gambar berhasil di-hosting ke CDN dan proyek tersimpan di database.");
                     document.getElementById('projectForm').reset();
                     uploadStatus.innerText = "Belum ada file dipilih";
                 } else {
-                    alert("Gagal memproses penyimpanan data proyek ke database.");
+                    alert("Gagal memproses data melalui serverless function Vercel.");
                 }
 
             } catch (error) {
