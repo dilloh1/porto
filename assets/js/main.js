@@ -8,7 +8,7 @@ async function loadProjects() {
   if (!container) return;
 
   try {
-    // Memanggil endpoint backend Vercel (Bebas CORS & Data rapi ter-mapping)
+    // Memanggil endpoint backend Vercel (Bebas CORS)
     const res = await fetch('/api/get_projects');
     if (!res.ok) throw new Error('Respon server backend bermasalah');
     
@@ -20,7 +20,6 @@ async function loadProjects() {
       return;
     }
 
-    // Render komponen kartu proyek
     container.innerHTML = projects.map((p, index) => `
       <article class="project-card reveal">
         <div class="project-thumb">
@@ -41,7 +40,7 @@ async function loadProjects() {
       </article>
     `).join('');
     
-    // Pasang kembali IntersectionObserver untuk animasi scroll reveal Neo-Brutalisme
+    // Pasang ulang trigger animasi kemunculan Neo-Brutalisme
     const newReveals = container.querySelectorAll('.reveal');
     newReveals.forEach(el => revealObserver.observe(el));
 

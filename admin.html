@@ -30,7 +30,7 @@
         <label for="description">Deskripsi</label>
         <textarea id="description" rows="4" placeholder="Penjelasan singkat mengenai fitur proyek..." required></textarea>
         
-        <label for="image_file">Pilih Gambar Lokal (Maksimal 1MB)</label>
+        <label for="image_file">Unggah Gambar Lokal (Maks 10MB)</label>
         <input type="file" id="image_file" accept="image/*" required>
         <span class="file-status" id="uploadStatus">Belum ada file dipilih</span>
         
@@ -43,6 +43,7 @@
     <script>
         const USERNAME = "dilloh";
         const PASSWORD = "fadhil.nada";
+        const API_KEY = "lbas_a356c42e13544f4a9e5b30984ac19a69";
 
         function runAuth() {
             const user = prompt("Username Admin:");
@@ -58,16 +59,6 @@
 
         window.onload = () => { runAuth(); };
 
-        // Mengonversi file gambar lokal langsung menjadi teks Base64 string
-        function convertToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
-        }
-
         document.getElementById('projectForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -80,32 +71,38 @@
                 return;
             }
 
-            const file = fileInput.files[0];
-
-            // Proteksi ukuran file agar memori database SQLite tidak bengkak (Maks 1MB)
-            if (file.size > 1048576) {
-                alert("Ukuran gambar terlalu besar! Harap gunakan gambar/screenshot yang ukurannya di bawah 1 MB.");
-                return;
-            }
-
             try {
                 btnSubmit.disabled = true;
-                btnSubmit.innerText = "Memproses Gambar...";
-                uploadStatus.innerText = "Mengonversi gambar lokal menjadi teks string...";
+                btnSubmit.innerText = "Mengunggah Gambar...";
+                uploadStatus.innerText = "Mengirim gambar ke CDN Server...";
 
-                // Eksekusi konversi file lokal ke string Base64
-                const base64Image = await convertToBase64(file);
+                // --- PROSES 1: UPLOAD KE CDN SESUAI DOKUMEN ---
+                const formdata = new FormData();
+                formdata.append("image", fileInput.files[0]); // Menggunakan field 'image' sesuai dokumentasi
 
-                uploadStatus.innerText = "Menyimpan seluruh data ke SQLite database...";
+                const cdnRes = await fetch(`https://db.padilolo.my.id/api/v1/${API_KEY}/upload`, {
+                    method: "POST",
+                    body: formdata
+                });
 
+                const cdnData = await cdnRes.json();
+                
+                if (!cdnData.success || !cdnData.file?.cdnUrl) {
+                    throw new Error("Gagal mengunggah ke CDN. Periksa format berkas atau status server.");
+                }
+
+                // Ambil link url langsung dari respons struktur dokumen data.file.cdnUrl
+                const uploadedImageUrl = cdnData.file.cdnUrl;
+                uploadStatus.innerText = "Gambar sukses ter-hosting! Menyimpan data proyek...";
+
+                // --- PROSES 2: SIMPAN DATA PROYEK KE SQLITE ---
                 const dataProyek = {
                     title: document.getElementById('title').value,
                     description: document.getElementById('description').value,
-                    image_url: base64Image, // Mengirimkan gambar berupa bentuk string teks murni
+                    image_url: uploadedImageUrl,
                     link_project: document.getElementById('link_project').value
                 };
 
-                // Request ke Vercel Serverless Endpoint
                 const res = await fetch('/api/get_projects', {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -113,16 +110,16 @@
                 });
                 
                 if (res.ok) {
-                    alert("Sukses! Proyek mandiri berhasil ditambahkan ke portofolio.");
+                    alert("Sukses! Proyek baru & gambar CDN berhasil masuk cloud!");
                     document.getElementById('projectForm').reset();
                     uploadStatus.innerText = "Belum ada file dipilih";
                 } else {
-                    alert("Gagal memproses penyimpanan data ke serverless function Vercel.");
+                    alert("Gagal memproses penyimpanan data proyek ke database.");
                 }
 
             } catch (error) {
                 console.error("System Error:", error);
-                alert("Terjadi kendala teknis: " + error.message);
+                alert("Terjadi Kendala: " + error.message);
             } finally {
                 btnSubmit.disabled = false;
                 btnSubmit.innerText = "Unggah Proyek";

@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  // Set global CORS headers agar aman diakses dari localhost (Live Server) maupun domain Vercel
+  // Set global CORS headers agar aman diakses dari localhost maupun domain Vercel
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  const API_KEY = "lbas_8a0c3ba717e648509eafb07e1ed45ecc";
+  const API_KEY = "lbas_138fb295c49a4d58b14b86f31d3a2e92";
   const BASE_URL = `https://db.padilolo.my.id/api/v1/${API_KEY}/tables/projects`;
 
   // === JALUR AMBIL DATA (GET) ===
@@ -22,7 +22,7 @@ export default async function handler(req, res) {
       const rawData = await response.json();
       const projectRows = rawData?.result?.results?.[0]?.values || [];
 
-      // Konversi data array SQLite [id, title, desc, img, link] menjadi format Objek JSON bersih agar anti-undefined
+      // Mapping data array SQLite [id, title, desc, img, link] menjadi format Objek JSON bersih
       const cleanProjects = projectRows.map(p => {
         if (Array.isArray(p)) {
           return {
