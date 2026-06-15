@@ -6,16 +6,18 @@
     <title>Admin Panel — Control Center</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;900&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght=700;900&family=Plus+Jakarta+Sans:wght=700;800&display=swap" rel="stylesheet" />
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; padding: 60px 20px; background: #fdfbf7; color: #121212; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; padding: 60px 20px; background: #fdfbf7; color: #121212; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 90vh; margin: 0; }
         h2 { font-family: 'Space Grotesk', sans-serif; font-weight: 900; font-size: 2rem; text-transform: uppercase; margin-bottom: 25px; letter-spacing: -1px; }
-        form { background: white; padding: 30px; border: 4px solid #121212; border-radius: 16px; width: 100%; max-width: 450px; box-shadow: 6px 6px 0px 0px #121212; display: none; }
+        form { background: white; padding: 30px; border: 4px solid #121212; border-radius: 16px; width: 100%; max-width: 450px; box-shadow: 6px 6px 0px 0px #121212; display: none; box-sizing: border-box; }
         label { font-weight: 800; display: block; margin-bottom: 8px; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; }
         input, textarea { width: 100%; margin-bottom: 20px; padding: 12px 16px; display: block; border: 3px solid #121212; border-radius: 8px; box-sizing: border-box; font-size: 0.95rem; font-family: inherit; font-weight: 700; background: #fff; }
         input:focus, textarea:focus { outline: none; background: #fffdf0; border-color: #FF914D; }
-        button { font-family: 'Space Grotesk', sans-serif; background: #FFDE59; border: 3px solid #121212; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: 900; font-size: 1.1rem; box-shadow: 4px 4px 0px 0px #121212; transition: transform 0.1s, box-shadow 0.1s; width: 100%; text-transform: uppercase; margin-top: 10px; }
+        .file-status { font-size: 0.85rem; font-weight: 800; color: #555; margin-top: -15px; margin-bottom: 20px; display: block; }
+        button { font-family: 'Space Grotesk', sans-serif; background: #FFDE59; border: 3px solid #121212; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: 900; font-size: 1.1rem; box-shadow: 4px 4px 0px 0px #121212; transition: transform 0.1s, box-shadow 0.1s; width: 100%; text-transform: uppercase; }
         button:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px 0px #121212; }
+        button:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; transform: none; }
     </style>
 </head>
 <body>
@@ -28,62 +30,104 @@
         <label for="description">Deskripsi</label>
         <textarea id="description" rows="4" placeholder="Penjelasan singkat mengenai fitur proyek..." required></textarea>
         
-        <label for="image_url">Link Gambar URL</label>
-        <input type="url" id="image_url" placeholder="https://domain.com/foto.png" required>
+        <label for="image_file">Pilih Gambar Lokal (Maksimal 1MB)</label>
+        <input type="file" id="image_file" accept="image/*" required>
+        <span class="file-status" id="uploadStatus">Belum ada file dipilih</span>
         
-        <label for="link_project">Link Tautan Proyek (Github / Live)</label>
+        <label for="link_project">Link Tautan Proyek (Github / Live Demo)</label>
         <input type="url" id="link_project" placeholder="https://github.com/..." required>
         
-        <button type="submit">Unggah Proyek</button>
+        <button type="submit" id="btnSubmit">Unggah Proyek</button>
     </form>
 
     <script>
-    const USERNAME = "dilloh";
-    const PASSWORD = "fadhil.nada";
-    const API_KEY = "lbas_a356c42e13544f4a9e5b30984ac19a69";
+        const USERNAME = "dilloh";
+        const PASSWORD = "fadhil.nada";
 
-    function checkAuth() {
-        const user = prompt("Masukkan Username:");
-        const pass = prompt("Masukkan Password:");
+        function runAuth() {
+            const user = prompt("Username Admin:");
+            const pass = prompt("Password Admin:");
 
-        if (user === USERNAME && pass === PASSWORD) {
-            document.getElementById('projectForm').style.display = 'block';
-            return true;
-        } else {
-            alert("Username atau Password salah!");
-            location.href = "index.html";
-            return false;
+            if (user === USERNAME && pass === PASSWORD) {
+                document.getElementById('projectForm').style.display = 'block';
+            } else {
+                alert("Akses ditolak!");
+                window.location.href = "index.html";
+            }
         }
-    }
 
-    if (checkAuth()) {
+        window.onload = () => { runAuth(); };
+
+        // Mengonversi file gambar lokal langsung menjadi teks Base64 string
+        function convertToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
         document.getElementById('projectForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const data = {
-                title: document.getElementById('title').value,
-                description: document.getElementById('description').value,
-                image_url: document.getElementById('image_url').value,
-                link_project: document.getElementById('link_project').value
-            };
+            
+            const btnSubmit = document.getElementById('btnSubmit');
+            const uploadStatus = document.getElementById('uploadStatus');
+            const fileInput = document.getElementById('image_file');
+            
+            if (fileInput.files.length === 0) {
+                alert("Pilih file gambar terlebih dahulu!");
+                return;
+            }
+
+            const file = fileInput.files[0];
+
+            // Proteksi ukuran file agar memori database SQLite tidak bengkak (Maks 1MB)
+            if (file.size > 1048576) {
+                alert("Ukuran gambar terlalu besar! Harap gunakan gambar/screenshot yang ukurannya di bawah 1 MB.");
+                return;
+            }
 
             try {
-                const res = await fetch(`https://db.padilolo.my.id/api/v1/${API_KEY}/tables/projects`, {
+                btnSubmit.disabled = true;
+                btnSubmit.innerText = "Memproses Gambar...";
+                uploadStatus.innerText = "Mengonversi gambar lokal menjadi teks string...";
+
+                // Eksekusi konversi file lokal ke string Base64
+                const base64Image = await convertToBase64(file);
+
+                uploadStatus.innerText = "Menyimpan seluruh data ke SQLite database...";
+
+                const dataProyek = {
+                    title: document.getElementById('title').value,
+                    description: document.getElementById('description').value,
+                    image_url: base64Image, // Mengirimkan gambar berupa bentuk string teks murni
+                    link_project: document.getElementById('link_project').value
+                };
+
+                // Request ke Vercel Serverless Endpoint
+                const res = await fetch('/api/get_projects', {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(dataProyek)
                 });
                 
-                if(res.ok) {
-                    alert("Proyek berhasil ditambah ke database!");
+                if (res.ok) {
+                    alert("Sukses! Proyek mandiri berhasil ditambahkan ke portofolio.");
                     document.getElementById('projectForm').reset();
+                    uploadStatus.innerText = "Belum ada file dipilih";
                 } else {
-                    alert("Gagal mengunggah, periksa kembali respons database.");
+                    alert("Gagal memproses penyimpanan data ke serverless function Vercel.");
                 }
+
             } catch (error) {
-                alert("Gagal menghubungi server database.");
+                console.error("System Error:", error);
+                alert("Terjadi kendala teknis: " + error.message);
+            } finally {
+                btnSubmit.disabled = false;
+                btnSubmit.innerText = "Unggah Proyek";
             }
         });
-    }
-</script>
+    </script>
 </body>
 </html>
