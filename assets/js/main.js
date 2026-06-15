@@ -13,6 +13,7 @@ async function loadProjects() {
     if (!res.ok) throw new Error('Respon server backend bermasalah');
     
     const result = await res.json();
+    console.debug('loadProjects response', result);
     const projects = result.data || [];
 
     if (projects.length === 0) {

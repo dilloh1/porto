@@ -111,11 +111,18 @@
                 uploadStatus.innerText = "Gambar ter-hosting di CDN! Menyimpan entitas data...";
 
                 // --- PROSES 2: SIMPAN SELURUH ENTITAS DATA PROYEK KE SQLITE VIA VERCEL PROXY ---
+                const projectTitle = document.getElementById('title').value;
+                const projectDescription = document.getElementById('description').value;
+                const projectLink = document.getElementById('link_project').value;
+
                 const dataProyek = {
-                    title: document.getElementById('title').value,
-                    description: document.getElementById('description').value,
-                    image_url: uploadedImageUrl, // Menyimpan tautan permanen CDN yang ringan
-                    link_project: document.getElementById('link_project').value
+                    title: projectTitle,
+                    description: projectDescription,
+                    desc: projectDescription,
+                    image_url: uploadedImageUrl,
+                    image: uploadedImageUrl,
+                    link_project: projectLink,
+                    link: projectLink
                 };
 
                 const res = await fetch('/api/get_projects', {

@@ -1,4 +1,6 @@
-export default async function handler(req, res) {
+const fetch = require('node-fetch');
+
+module.exports = async function handler(req, res) {
   // Set global CORS headers agar aman diakses dari localhost maupun domain produksi
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -24,9 +26,8 @@ export default async function handler(req, res) {
       
       const rawData = await response.json();
       // Mengambil baris data SQLite dari struktur respons database
-      const projectRows = rawData?.result?.results?.[0]?.values || [];
+      const projectRows = rawData?.result?.results?.[0]?.values || rawData?.values || rawData?.result?.results || [];
 
-      // Konversi data dari bentuk Array [id, title, desc, img, link] menjadi Objek JSON agar anti-undefined
       const cleanProjects = projectRows.map(p => {
         if (Array.isArray(p)) {
           return {
@@ -37,10 +38,19 @@ export default async function handler(req, res) {
             link_project: p[4] || "#"
           };
         }
+        if (p && typeof p === 'object') {
+          return {
+            id: p.id || p[0],
+            title: p.title || p.name || "Proyek Tanpa Judul",
+            description: p.description || p.desc || "Tidak ada deskripsi tersedia.",
+            image_url: p.image_url || p.image || p.img || "https://placehold.co/600x400?text=No+Image",
+            link_project: p.link_project || p.link || p.url || "#"
+          };
+        }
         return null;
       }).filter(Boolean);
 
-      return res.status(200).json({ success: true, data: cleanProjects });
+      return res.status(200).json({ success: true, data: cleanProjects, raw: rawData });
 
     } catch (error) {
       return res.status(500).json({ success: false, error: error.message });
