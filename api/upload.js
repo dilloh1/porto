@@ -17,8 +17,10 @@ module.exports = async (req, res) => {
     if (!file) return res.status(400).json({ success: false, message: 'No file uploaded' });
 
     try {
+      const tempPath = file.filepath || file.path;
+      const filename = file.originalFilename || file.newFilename || file.name || 'upload-image';
       const fd = new FormData();
-      fd.append('image', fs.createReadStream(file.path), file.originalFilename || file.newFilename || file.name);
+      fd.append('image', fs.createReadStream(tempPath), filename);
 
       const resp = await fetch(`${CDN_BASE}/upload`, {
         method: 'POST',
@@ -27,7 +29,7 @@ module.exports = async (req, res) => {
       });
 
       const json = await resp.json();
-      fs.unlink(file.path, () => {});
+      if (tempPath) fs.unlink(tempPath, () => {});
 
       if (!resp.ok) {
         return res.status(resp.status).json(json);
@@ -35,7 +37,8 @@ module.exports = async (req, res) => {
 
       return res.status(200).json(json);
     } catch (e) {
-      fs.unlink(file.path, () => {});
+      const tempPath = file.filepath || file.path;
+      if (tempPath) fs.unlink(tempPath, () => {});
       return res.status(500).json({ success: false, message: 'Proxy error', error: e.message });
     }
   });
