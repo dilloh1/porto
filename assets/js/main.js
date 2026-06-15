@@ -2,6 +2,48 @@
    MAIN.JS — Portfolio Ananda Fahrudin Fadhillah
    ============================================= */
 
+// === 1. FUNGSI FETCH & RENDER PROYEK (VERCEL COMPATIBLE) ===
+async function loadProjects() {
+  const container = document.getElementById('projectsGrid');
+  if (!container) return;
+
+  try {
+    // Memanggil Serverless Function Vercel (Aman & Bebas CORS)
+    const res = await fetch('/api/get_projects');
+    if (!res.ok) throw new Error('Respon server backend bermasalah');
+    
+    const data = await res.json();
+    const projects = data.result.results[0].values;
+
+    container.innerHTML = projects.map((p, index) => `
+      <article class="project-card reveal">
+        <div class="project-thumb">
+          <img src="${p.image_url}" alt="${p.title}" class="project-image" />
+          <div class="project-number">0${index + 1}</div>
+        </div>
+        <div class="project-body">
+          <h3 class="project-title">${p.title}</h3>
+          <p class="project-desc">${p.description}</p>
+          <div class="project-footer">
+            <div class="project-links">
+              <a href="${p.link_project}" target="_blank" class="project-link project-link-live">
+                <i class="fas fa-external-link-alt"></i> View Project
+              </a>
+            </div>
+          </div>
+        </div>
+      </article>
+    `).join('');
+    
+    const newReveals = container.querySelectorAll('.reveal');
+    newReveals.forEach(el => revealObserver.observe(el));
+
+  } catch (err) {
+    console.error("Gagal memuat proyek:", err);
+    container.innerHTML = `<p style="text-align:center; padding:20px; color:var(--saweria-dark); font-weight:700;">Gagal memuat proyek dari database.</p>`;
+  }
+}
+
 // === NAVBAR SCROLL ===
 const navbar = document.getElementById('navbar');
 window.addEventListener('scroll', () => {
@@ -28,7 +70,6 @@ hamburger.addEventListener('click', () => {
   }
 });
 
-// Tutup menu saat klik link
 navLinks.querySelectorAll('a').forEach(link => {
   link.addEventListener('click', () => {
     navLinks.classList.remove('open');
@@ -90,5 +131,11 @@ const skillObserver = new IntersectionObserver((entries) => {
 
 skillBars.forEach(bar => skillObserver.observe(bar));
 
-// === FOOTER YEAR ===
-document.getElementById('footerYear').textContent = `© ${new Date().getFullYear()} Ananda Fahrudin Fadhillah`;
+// === INITIALIZATION ===
+document.addEventListener('DOMContentLoaded', () => {
+  const footerYearEl = document.getElementById('footerYear');
+  if (footerYearEl) {
+    footerYearEl.textContent = `© ${new Date().getFullYear()} Ananda Fahrudin Fadhillah`;
+  }
+  loadProjects();
+});
