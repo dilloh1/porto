@@ -2,37 +2,44 @@
    MAIN.JS — Portfolio Ananda Fahrudin Fadhillah
    ============================================= */
 
-// === GANTI HANYA FUNGSI INI DI DALAM MAIN.JS ===
+// === KONFIGURASI API ===
+const API_KEY = "lbas_a356c42e13544f4a9e5b30984ac19a69";
+const BASE = `https://db.padilolo.my.id/api/v1/${API_KEY}`;
+
+// === 1. FUNGSI FETCH & RENDER PROYEK ===
 async function loadProjects() {
   const container = document.getElementById('projectsGrid');
   if (!container) return;
 
   try {
-    const res = await fetch('/api/get_projects');
-    if (!res.ok) throw new Error('Respon server backend bermasalah');
+    // Mengambil data langsung dari database API
+    const res = await fetch(`${BASE}/tables/projects?limit=50`);
+    if (!res.ok) throw new Error('Gagal mengambil data dari server database');
     
-    const result = await res.json();
+    const data = await res.json();
     
-    // Ambil data bersih yang sudah difilter oleh API Node.js kita
-    const projects = result.data || [];
+    // Mengambil baris data mentah dari respon database
+    const rawProjects = data?.result?.results?.[0]?.values || [];
 
-    if (projects.length === 0) {
+    if (rawProjects.length === 0) {
       container.innerHTML = `<p style="text-align:center; padding:20px; font-weight:700;">Belum ada proyek yang ditambahkan.</p>`;
       return;
     }
 
-    container.innerHTML = projects.map((p, index) => `
+    // Render ke HTML dengan mencocokkan indeks array database Anda:
+    // p[1] = title, p[2] = description, p[3] = image_url, p[4] = link_project
+    container.innerHTML = rawProjects.map((p, index) => `
       <article class="project-card reveal">
         <div class="project-thumb">
-          <img src="${p.image_url}" alt="${p.title}" class="project-image" onerror="this.src='https://placehold.co/600x400?text=Image+Error'"/>
+          <img src="${p[3]}" alt="${p[1]}" class="project-image" onerror="this.src='https://placehold.co/600x400?text=Image+Error'"/>
           <div class="project-number">0${index + 1}</div>
         </div>
         <div class="project-body">
-          <h3 class="project-title">${p.title}</h3>
-          <p class="project-desc">${p.description}</p>
+          <h3 class="project-title">${p[1]}</h3>
+          <p class="project-desc">${p[2]}</p>
           <div class="project-footer">
             <div class="project-links">
-              <a href="${p.link_project}" target="_blank" class="project-link project-link-live">
+              <a href="${p[4]}" target="_blank" class="project-link project-link-live">
                 <i class="fas fa-external-link-alt"></i> View Project
               </a>
             </div>
@@ -41,12 +48,13 @@ async function loadProjects() {
       </article>
     `).join('');
     
+    // Aktifkan kembali animasi kemunculan (reveal animation)
     const newReveals = container.querySelectorAll('.reveal');
     newReveals.forEach(el => revealObserver.observe(el));
 
   } catch (err) {
     console.error("Gagal memuat proyek:", err);
-    container.innerHTML = `<p style="text-align:center; padding:20px; color:var(--saweria-dark); font-weight:700;">Gagal memuat proyek dari database.</p>`;
+    container.innerHTML = `<p style="text-align:center; padding:20px; font-weight:700;">Gagal memuat proyek dari database.</p>`;
   }
 }
 
@@ -139,9 +147,6 @@ skillBars.forEach(bar => skillObserver.observe(bar));
 
 // === INITIALIZATION ===
 document.addEventListener('DOMContentLoaded', () => {
-  const footerYearEl = document.getElementById('footerYear');
-  if (footerYearEl) {
-    footerYearEl.textContent = `© ${new Date().getFullYear()} Ananda Fahrudin Fadhillah`;
-  }
-  loadProjects();
+    document.getElementById('footerYear').textContent = `© ${new Date().getFullYear()} Ananda Fahrudin Fadhillah`;
+    loadProjects();
 });

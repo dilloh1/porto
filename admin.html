@@ -8,13 +8,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;900&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet" />
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; padding: 60px 20px; background: #fdfbf7; color: #121212; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; padding: 60px 20px; background: #fdfbf7; color: #121212; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; }
         h2 { font-family: 'Space Grotesk', sans-serif; font-weight: 900; font-size: 2rem; text-transform: uppercase; margin-bottom: 25px; letter-spacing: -1px; }
         form { background: white; padding: 30px; border: 4px solid #121212; border-radius: 16px; width: 100%; max-width: 450px; box-shadow: 6px 6px 0px 0px #121212; display: none; }
-        label { font-weight: 800; display: block; margin-bottom: 8px; text-transform: uppercase; font-size: 0.85rem; }
-        input, textarea { width: 100%; margin-bottom: 20px; padding: 12px 16px; display: block; border: 2px solid #121212; border-radius: 8px; box-sizing: border-box; font-size: 0.95rem; font-family: inherit; font-weight: 700; background: #fff; }
+        label { font-weight: 800; display: block; margin-bottom: 8px; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; }
+        input, textarea { width: 100%; margin-bottom: 20px; padding: 12px 16px; display: block; border: 3px solid #121212; border-radius: 8px; box-sizing: border-box; font-size: 0.95rem; font-family: inherit; font-weight: 700; background: #fff; }
         input:focus, textarea:focus { outline: none; background: #fffdf0; border-color: #FF914D; }
-        button { font-family: 'Space Grotesk', sans-serif; background: #FFDE59; border: 3px solid #121212; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: 900; font-size: 1.1rem; box-shadow: 4px 4px 0px 0px #121212; transition: transform 0.1s, box-shadow 0.1s; width: 100%; text-transform: uppercase; }
+        button { font-family: 'Space Grotesk', sans-serif; background: #FFDE59; border: 3px solid #121212; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: 900; font-size: 1.1rem; box-shadow: 4px 4px 0px 0px #121212; transition: transform 0.1s, box-shadow 0.1s; width: 100%; text-transform: uppercase; margin-top: 10px; }
         button:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px 0px #121212; }
     </style>
 </head>
@@ -38,28 +38,27 @@
     </form>
 
     <script>
-        const USERNAME = "dilloh";
-        const PASSWORD = "fadhil.nada";
+    const USERNAME = "dilloh";
+    const PASSWORD = "fadhil.nada";
+    const API_KEY = "lbas_a356c42e13544f4a9e5b30984ac19a69";
 
-        function runAuth() {
-            const user = prompt("Username Admin:");
-            const pass = prompt("Password Admin:");
+    function checkAuth() {
+        const user = prompt("Masukkan Username:");
+        const pass = prompt("Masukkan Password:");
 
-            if (user === USERNAME && pass === PASSWORD) {
-                document.getElementById('projectForm').style.display = 'block';
-            } else {
-                alert("Akses ditolak! Kredensial tidak valid.");
-                window.location.href = "index.html";
-            }
+        if (user === USERNAME && pass === PASSWORD) {
+            document.getElementById('projectForm').style.display = 'block';
+            return true;
+        } else {
+            alert("Username atau Password salah!");
+            location.href = "index.html";
+            return false;
         }
+    }
 
-        window.onload = () => {
-            runAuth();
-        };
-
+    if (checkAuth()) {
         document.getElementById('projectForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             const data = {
                 title: document.getElementById('title').value,
                 description: document.getElementById('description').value,
@@ -68,24 +67,23 @@
             };
 
             try {
-                // Mengirimkan POST request ke Vercel Serverless Function
-                const res = await fetch('/api/get_projects', {
+                const res = await fetch(`https://db.padilolo.my.id/api/v1/${API_KEY}/tables/projects`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(data)
                 });
                 
-                if (res.ok) {
-                    alert("Sukses! Data proyek baru berhasil masuk ke database SQLite.");
+                if(res.ok) {
+                    alert("Proyek berhasil ditambah ke database!");
                     document.getElementById('projectForm').reset();
                 } else {
-                    alert("Gagal memproses data melalui serverless function Vercel.");
+                    alert("Gagal mengunggah, periksa kembali respons database.");
                 }
             } catch (error) {
-                console.error("Error submit:", error);
-                alert("Tidak dapat terhubung ke server database.");
+                alert("Gagal menghubungi server database.");
             }
         });
-    </script>
+    }
+</script>
 </body>
 </html>
