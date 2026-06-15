@@ -1,30 +1,63 @@
 export default async function handler(req, res) {
-  // Atur Header CORS agar bisa diakses oleh frontend Anda
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // Tangani preflight request dari browser
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
-  // === API CONFIGURATION (AMAN DI SISI SERVER VERCEL) ===
-  const API_KEY = "lbas_8a0c3ba717e648509eafb07e1ed45ecc";
+  const API_KEY = "lbas_a356c42e13544f4a9e5b30984ac19a69";
   const BASE_URL = `https://db.padilolo.my.id/api/v1/${API_KEY}/tables/projects`;
 
-  // 1. JIKA REQUEST ADALAH GET (Ambil Data untuk index.html)
+  // 1. AMBIL DATA (GET)
   if (req.method === 'GET') {
     try {
       const response = await fetch(`${BASE_URL}?limit=50`);
       const data = await response.json();
-      return res.status(response.status).json(data);
+      
+      // Pengaman & Pemetaan Otomatis jika struktur datanya berupa array berindeks
+      let rawProjects = [];
+      
+      if (data?.result?.results?.[0]?.values) {
+        rawProjects = data.result.results[0].values;
+      } else if (data?.results) {
+        rawProjects = data.results;
+      } else if (Array.isArray(data)) {
+        rawProjects = data;
+      }
+
+      // Validasi struktur: Jika data berbentuk array di dalam array (berdasarkan kolom)
+      const cleanProjects = rawProjects.map(p => {
+        // Jika data berbentuk objek standar
+        if (p && typeof p === 'object' && !Array.isArray(p)) {
+          return {
+            title: p.title || p.nama || "Tanpa Judul",
+            description: p.description || p.deskripsi || "Tidak ada deskripsi.",
+            image_url: p.image_url || p.gambar || "https://placehold.co/600x400?text=No+Image",
+            link_project: p.link_project || p.link || "#"
+          };
+        }
+        // Jika data berbentuk array terindeks [id, title, description, image_url, link_project]
+        if (Array.isArray(p)) {
+          return {
+            title: p[1] || "Tanpa Judul",
+            description: p[2] || "Tidak ada deskripsi.",
+            image_url: p[3] || "https://placehold.co/600x400?text=No+Image",
+            link_project: p[4] || "#"
+          };
+        }
+        return null;
+      }).filter(Boolean);
+
+      return res.status(200).json({ success: true, data: cleanProjects });
+
     } catch (error) {
-      return res.status(500).json({ error: "Gagal mengambil data dari database" });
+      return res.status(500).json({ error: "Gagal memproses data dari database" });
     }
   }
 
-  // 2. JIKA REQUEST ADALAH POST (Tambah Data dari admin.html)
+  // 2. INPUT DATA (POST)
   if (req.method === 'POST') {
     try {
       const response = await fetch(BASE_URL, {
@@ -39,6 +72,5 @@ export default async function handler(req, res) {
     }
   }
 
-  // Jika method tidak diizinkan
   return res.status(405).json({ error: "Method Not Allowed" });
 }

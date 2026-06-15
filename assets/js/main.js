@@ -2,23 +2,29 @@
    MAIN.JS — Portfolio Ananda Fahrudin Fadhillah
    ============================================= */
 
-// === 1. FUNGSI FETCH & RENDER PROYEK (VERCEL COMPATIBLE) ===
+// === GANTI HANYA FUNGSI INI DI DALAM MAIN.JS ===
 async function loadProjects() {
   const container = document.getElementById('projectsGrid');
   if (!container) return;
 
   try {
-    // Memanggil Serverless Function Vercel (Aman & Bebas CORS)
     const res = await fetch('/api/get_projects');
     if (!res.ok) throw new Error('Respon server backend bermasalah');
     
-    const data = await res.json();
-    const projects = data.result.results[0].values;
+    const result = await res.json();
+    
+    // Ambil data bersih yang sudah difilter oleh API Node.js kita
+    const projects = result.data || [];
+
+    if (projects.length === 0) {
+      container.innerHTML = `<p style="text-align:center; padding:20px; font-weight:700;">Belum ada proyek yang ditambahkan.</p>`;
+      return;
+    }
 
     container.innerHTML = projects.map((p, index) => `
       <article class="project-card reveal">
         <div class="project-thumb">
-          <img src="${p.image_url}" alt="${p.title}" class="project-image" />
+          <img src="${p.image_url}" alt="${p.title}" class="project-image" onerror="this.src='https://placehold.co/600x400?text=Image+Error'"/>
           <div class="project-number">0${index + 1}</div>
         </div>
         <div class="project-body">
