@@ -1,51 +1,105 @@
 const express = require('express');
 const path = require('path');
 const multer = require('multer');
-const FormData = require('form-data');
-const fetch = require('node-fetch');
 const fs = require('fs');
 const cors = require('cors');
+const sqlite3 = require('sqlite3').verbose();
 
 const app = express();
-const upload = multer({ dest: path.join(__dirname, 'tmp_uploads') });
 app.use(cors());
+app.use(express.json());
+
+// Ensure uploads folder exists
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
 // Serve static site from project root
 app.use(express.static(path.join(__dirname)));
+// Serve uploaded files statically
+app.use('/uploads', express.static(uploadsDir));
 
-// Load API_KEY from env or fallback (keep secret in real deployment)
-const API_KEY = process.env.LITEBAS_API_KEY || 'lbas_a356c42e13544f4a9e5b30984ac19a69';
-const CDN_BASE = `https://db.padilolo.my.id/api/v1/${API_KEY}`;
-
-app.post('/upload', upload.single('image'), async (req, res) => {
-  if (!req.file) return res.status(400).json({ success: false, message: 'No file uploaded' });
-
-  try {
-    const form = new FormData();
-    form.append('image', fs.createReadStream(req.file.path), req.file.originalname);
-
-    const resp = await fetch(`${CDN_BASE}/upload`, {
-      method: 'POST',
-      headers: form.getHeaders(),
-      body: form
-    });
-
-    const json = await resp.json();
-
-    // Cleanup temp file
-    fs.unlink(req.file.path, () => {});
-
-    if (!resp.ok) {
-      return res.status(resp.status).json({ success: false, message: 'CDN upload failed', details: json });
-    }
-
-    // Proxy back the CDN response
-    return res.status(200).json(json);
-  } catch (err) {
-    fs.unlink(req.file.path, () => {});
-    return res.status(500).json({ success: false, message: 'Proxy error', error: err.message });
+// Initialize local SQLite database
+const dbPath = path.join(__dirname, 'database.db');
+const db = new sqlite3.Database(dbPath, (err) => {
+  if (err) {
+    console.error('Failed to connect to SQLite database:', err.message);
+  } else {
+    console.log('Connected to local SQLite database.');
+    db.run(`
+      CREATE TABLE IF NOT EXISTS projects (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        description TEXT,
+        image_url TEXT,
+        link_project TEXT
+      )
+    `);
   }
 });
 
+// Configure Multer for local uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadsDir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
+const upload = multer({ storage: storage });
+
+// API Route: Upload Image
+app.post('/api/upload', upload.single('image'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ success: false, message: 'No file uploaded' });
+  }
+  // Generate local relative URL path for the frontend
+  const imageUrl = `/uploads/${req.file.filename}`;
+  return res.status(200).json({
+    success: true,
+    file: {
+      url: imageUrl
+    }
+  });
+});
+
+// API Route: Get Projects
+app.get('/api/get_projects', (req, res) => {
+  db.all('SELECT * FROM projects ORDER BY id DESC', [], (err, rows) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: 'Failed to retrieve projects', error: err.message });
+    }
+    return res.status(200).json({ success: true, data: rows });
+  });
+});
+
+// API Route: Add Project
+app.post('/api/get_projects', (req, res) => {
+  const { title, description, image_url, link_project } = req.body;
+  if (!title) {
+    return res.status(400).json({ success: false, message: 'Project title is required' });
+  }
+
+  const query = `INSERT INTO projects (title, description, image_url, link_project) VALUES (?, ?, ?, ?)`;
+  db.run(query, [title, description || '', image_url || '', link_project || ''], function(err) {
+    if (err) {
+      return res.status(500).json({ success: false, message: 'Failed to save project', error: err.message });
+    }
+    return res.status(200).json({
+      success: true,
+      data: {
+        id: this.lastID,
+        title,
+        description,
+        image_url,
+        link_project
+      }
+    });
+  });
+});
+
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Local dev server with upload proxy running at http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Local dev server with SQLite running at http://localhost:${PORT}`));
