@@ -124,5 +124,78 @@ app.post('/api/get_projects', (req, res) => {
   });
 });
 
+// API Route: Delete Project
+app.delete('/api/get_projects/:id', (req, res) => {
+  const id = req.params.id;
+  
+  db.get('SELECT * FROM projects WHERE id = ?', [id], (err, row) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: 'Failed to find project', error: err.message });
+    }
+    if (!row) {
+      return res.status(404).json({ success: false, message: 'Project not found' });
+    }
+
+    const imageUrl = row.image_url;
+
+    db.run('DELETE FROM projects WHERE id = ?', [id], function(err) {
+      if (err) {
+        return res.status(500).json({ success: false, message: 'Failed to delete project record', error: err.message });
+      }
+
+      if (imageUrl && imageUrl.startsWith('/uploads/')) {
+        const localPath = path.join(__dirname, imageUrl);
+        fs.unlink(localPath, (err) => {
+          if (err) console.error('Failed to delete project image file:', err.message);
+        });
+      }
+
+      return res.status(200).json({ success: true, message: 'Project deleted successfully' });
+    });
+  });
+});
+
+// API Route: Update Project
+app.put('/api/get_projects/:id', (req, res) => {
+  const id = req.params.id;
+  const { title, description, image_url, link_project } = req.body;
+
+  if (!title) {
+    return res.status(400).json({ success: false, message: 'Project title is required' });
+  }
+
+  db.get('SELECT * FROM projects WHERE id = ?', [id], (err, row) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: 'Failed to find project', error: err.message });
+    }
+    if (!row) {
+      return res.status(404).json({ success: false, message: 'Project not found' });
+    }
+
+    const oldImageUrl = row.image_url;
+    const deleteOldFile = image_url && oldImageUrl && image_url !== oldImageUrl && oldImageUrl.startsWith('/uploads/');
+
+    const query = `UPDATE projects SET title = ?, description = ?, image_url = ?, link_project = ? WHERE id = ?`;
+    db.run(query, [title, description || '', image_url || row.image_url, link_project || '', id], function(err) {
+      if (err) {
+        return res.status(500).json({ success: false, message: 'Failed to update project', error: err.message });
+      }
+
+      if (deleteOldFile) {
+        const localPath = path.join(__dirname, oldImageUrl);
+        fs.unlink(localPath, (err) => {
+          if (err) console.error('Failed to delete old project image file:', err.message);
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: 'Project updated successfully',
+        data: { id, title, description, image_url: image_url || row.image_url, link_project }
+      });
+    });
+  });
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Local dev server with SQLite running at http://localhost:${PORT}`));
