@@ -44,7 +44,9 @@ async function loadProjects() {
     
     // Pasang kembali IntersectionObserver untuk memicu animasi scroll reveal Neo-Brutalisme
     const newReveals = container.querySelectorAll('.reveal');
-    newReveals.forEach(el => revealObserver.observe(el));
+    if (typeof revealObserver !== 'undefined' && revealObserver) {
+      newReveals.forEach(el => revealObserver.observe(el));
+    }
 
   } catch (err) {
     console.error("Gagal memuat proyek:", err);
@@ -114,13 +116,14 @@ if (sections.length > 0 && navItems.length > 0) {
 }
 
 // === SCROLL REVEAL ===
+let revealObserver;
 const revealEls = document.querySelectorAll(
   '.skill-card, .project-card, .testi-card, .contact-card, .about-card, .section-title, .section-sub, .section-label'
 );
 if (revealEls.length > 0) {
   revealEls.forEach(el => el.classList.add('reveal'));
 
-  const revealObserver = new IntersectionObserver((entries) => {
+  revealObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
       if (entry.isIntersecting) {
         setTimeout(() => entry.target.classList.add('visible'), i * 60);
