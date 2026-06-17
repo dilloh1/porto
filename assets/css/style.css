@@ -802,3 +802,94 @@ strong { color: var(--saweria-orange); font-weight: 700; }
   .projects-grid { grid-template-columns: 1fr; }
   .hero-orbit { display: none; }
 }
+
+/* === THEME TOGGLE BUTTON === */
+.btn-theme-toggle {
+  background: var(--white);
+  border: var(--border-thin);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: var(--saweria-dark);
+  box-shadow: 2px 2px 0px 0px var(--saweria-dark);
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.btn-theme-toggle:hover {
+  background: var(--saweria-yellow);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px 0px var(--saweria-dark);
+}
+.btn-theme-toggle:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px 0px var(--saweria-dark);
+}
+
+/* === DARK MODE OVERRIDES === */
+body.dark-mode {
+  --saweria-bg: #121212;
+  --saweria-dark: #FDFBF7;
+  --white: #1e1e1e;
+  --saweria-light: #282828;
+  --border-thick: 4px solid #FDFBF7;
+  --border-thin: 2px solid #FDFBF7;
+}
+
+body.dark-mode .section-sub,
+body.dark-mode .hero-desc,
+body.dark-mode .about-text p,
+body.dark-mode .project-desc,
+body.dark-mode .hcard-role,
+body.dark-mode .info-label,
+body.dark-mode .skill-pct,
+body.dark-mode .contact-platform,
+body.dark-mode .footer-year {
+  color: #a3a3a3;
+}
+
+body.dark-mode .project-item,
+body.dark-mode .chip,
+body.dark-mode .contact-card,
+body.dark-mode .skill-card,
+body.dark-mode .project-card,
+body.dark-mode .about-card,
+body.dark-mode .hero-card,
+body.dark-mode .orbit-dot,
+body.dark-mode .btn-ghost,
+body.dark-mode .navbar,
+body.dark-mode .footer,
+body.dark-mode .hamburger {
+  background: var(--white);
+  color: var(--saweria-dark);
+}
+
+body.dark-mode .orbit-ring {
+  border-color: var(--saweria-dark);
+}
+
+body.dark-mode .logo-box {
+  background: var(--saweria-yellow);
+  color: #121212; /* Keep logo dark for readability */
+}
+
+body.dark-mode .nav-logo {
+  color: var(--saweria-dark);
+}
+
+body.dark-mode .nav-links.open {
+  background: var(--white);
+}
+
+body.dark-mode .nav-links a:hover {
+  background: var(--saweria-yellow);
+  color: #121212;
+}
+
+body.dark-mode .project-mockup,
+body.dark-mode .server-mockup {
+  border-color: var(--saweria-dark);
+}
