@@ -20,22 +20,45 @@ app.use(express.static(path.join(__dirname)));
 // Serve uploaded files statically
 app.use('/uploads', express.static(uploadsDir));
 
-// Initialize local SQLite database
+// Initialize local SQLite database and pre-populate defaults if empty
 const dbPath = path.join(__dirname, 'database.db');
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error('Failed to connect to SQLite database:', err.message);
   } else {
     console.log('Connected to local SQLite database.');
-    db.run(`
-      CREATE TABLE IF NOT EXISTS projects (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
-        description TEXT,
-        image_url TEXT,
-        link_project TEXT
-      )
-    `);
+    db.serialize(() => {
+      db.run(`
+        CREATE TABLE IF NOT EXISTS projects (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          title TEXT NOT NULL,
+          description TEXT,
+          image_url TEXT,
+          link_project TEXT
+        )
+      `);
+
+      // Seed default projects if database is empty
+      db.get("SELECT COUNT(*) as count FROM projects", (err, row) => {
+        if (!err && row && row.count === 0) {
+          const stmt = db.prepare("INSERT INTO projects (title, description, image_url, link_project) VALUES (?, ?, ?, ?)");
+          stmt.run(
+            "Mini Private Server STB Bekas",
+            "Eksperimen merakit server mini mandiri menggunakan STB bekas untuk kebutuhan penyimpanan data lokal, blocking iklan (DNS sinkhole), dan hosting lokal.",
+            "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&auto=format&fit=crop",
+            "https://github.com/dilloh1"
+          );
+          stmt.run(
+            "Neo-Brutalist Portfolio",
+            "Website portofolio pribadi modern dengan estetika neo-brutalisme, ditenagai backend Express.js dan database SQLite untuk manajemen konten proyek secara dinamis.",
+            "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=600&auto=format&fit=crop",
+            "https://github.com/dilloh1"
+          );
+          stmt.finalize();
+          console.log("Pre-populated SQLite database with default projects.");
+        }
+      });
+    });
   }
 });
 
