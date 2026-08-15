@@ -1,345 +1,426 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portofolio - Hardware & Software Developer</title>
-    <meta name="description" content="Portofolio Pribadi - Hardware & Coding Developer. Membangun solusi kreatif berbasis perangkat keras dan perangkat lunak.">
+    <meta name="description" content="Portofolio Personal - Developer Hardware (IoT & Embedded) & Software (Web & Mobile Apps)">
 
-    <!-- Google Fonts -->
+    <!-- Google Fonts: Space Grotesk & Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
     <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <link rel="stylesheet" href="style.css">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"Space Grotesk"', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                        },
+                        dark: {
+                            900: '#090d16',
+                            800: '#0f172a',
+                            700: '#1e293b',
+                            600: '#334155',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Handcrafted Minimal CSS Custom Utilities */
+        body {
+            background-color: #090d16;
+            color: #f1f5f9;
+        }
+        .grid-pattern {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+    </style>
 </head>
-<body>
+<body class="font-sans antialiased grid-pattern min-h-screen flex flex-col selection:bg-emerald-500 selection:text-black">
 
-    <!-- Three.js 3D Canvas Background -->
-    <canvas id="three-canvas"></canvas>
-
-    <!-- Navbar -->
-    <header class="navbar" id="navbar">
-        <div class="container nav-container">
-            <a href="#" class="logo">
-                <span class="logo-icon"><i class="fa-solid fa-terminal"></i></span>
-                <span class="logo-text">Porto<span class="gradient-text">folio</span></span>
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-dark-900/80 border-b border-slate-800/80">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-2.5 group">
+                <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:bg-emerald-500 group-hover:text-black transition-all">
+                    <i class="fa-solid fa-code text-sm"></i>
+                </div>
+                <span class="font-mono font-bold text-lg text-slate-100 tracking-tight">DEV<span class="text-emerald-400">.PORTO</span></span>
             </a>
-            <nav class="nav-links" id="nav-links">
-                <a href="#hero" class="nav-link active">Beranda</a>
-                <a href="#about" class="nav-link">Tentang</a>
-                <a href="#skills" class="nav-link">Keahlian</a>
-                <a href="#projects" class="nav-link">Proyek</a>
-                <a href="#contact" class="nav-link">Kontak</a>
+
+            <!-- Desktop Links -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+                <a href="#about" class="hover:text-emerald-400 transition-colors">Tentang</a>
+                <a href="#skills" class="hover:text-emerald-400 transition-colors">Keahlian</a>
+                <a href="#projects" class="hover:text-emerald-400 transition-colors">Proyek</a>
+                <a href="#contact" class="hover:text-emerald-400 transition-colors">Kontak</a>
             </nav>
-            <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Menu">
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
+
+            <!-- CTA Header Button -->
+            <div class="hidden md:flex items-center gap-4">
+                <a href="#contact" class="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-xs uppercase tracking-wider transition-all shadow-lg shadow-emerald-500/10">
+                    Diskusi Proyek
+                </a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="menu-btn" class="md:hidden p-2 text-slate-400 hover:text-white" aria-label="Toggle Menu">
+                <i class="fa-solid fa-bars text-xl"></i>
             </button>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden border-b border-slate-800 bg-dark-900/95 px-4 py-4 space-y-3 font-medium text-slate-300">
+            <a href="#about" class="block hover:text-emerald-400">Tentang</a>
+            <a href="#skills" class="block hover:text-emerald-400">Keahlian</a>
+            <a href="#projects" class="block hover:text-emerald-400">Proyek</a>
+            <a href="#contact" class="block hover:text-emerald-400">Kontak</a>
         </div>
     </header>
 
-    <!-- ==================== HERO SECTION ==================== -->
-    <section id="hero" class="hero-section">
-        <div class="container hero-container">
-            <div class="hero-content reveal-up">
-                <div class="hero-badge">
-                    <span class="pulse-dot"></span> Tersedia untuk Kolaborasi
-                </div>
-                <h1 class="hero-title">
-                    Halo, Saya<br>
-                    <span class="gradient-text typed-text">Developer & Maker</span>
-                </h1>
-                <p class="hero-description">
-                    Membangun solusi inovatif di persimpangan <strong>Hardware</strong> dan <strong>Software</strong>.
-                    Dari merakit mikrokontroler IoT hingga membangun aplikasi web & mobile modern.
-                </p>
-                <div class="hero-cta">
-                    <a href="#projects" class="btn btn-primary">
-                        <i class="fa-solid fa-rocket"></i> Lihat Proyek
-                    </a>
-                    <a href="#contact" class="btn btn-glass">
-                        <i class="fa-solid fa-paper-plane"></i> Hubungi Saya
-                    </a>
-                </div>
-            </div>
-
-            <!-- Large Profile Photo -->
-            <div class="hero-avatar-wrapper reveal-up" style="animation-delay: 0.2s;">
-                <div class="avatar-ring">
-                    <div class="avatar-ring-inner"></div>
-                </div>
-                <div class="avatar-card">
-                    <!-- GANTI dengan foto Anda: simpan di assets/ lalu ubah src di bawah -->
-                    <img src="assets/avatar.svg" alt="Foto Profil" class="avatar-img" id="profile-img">
-                </div>
-                <div class="avatar-float-badge badge-top">
-                    <i class="fa-solid fa-microchip"></i> Hardware
-                </div>
-                <div class="avatar-float-badge badge-bottom">
-                    <i class="fa-solid fa-code"></i> Software
-                </div>
-            </div>
-        </div>
-
-        <!-- Scroll Indicator -->
-        <div class="scroll-indicator">
-            <div class="scroll-mouse">
-                <div class="scroll-wheel"></div>
-            </div>
-            <span>Scroll ke bawah</span>
-        </div>
-    </section>
-
-    <!-- ==================== ABOUT SECTION ==================== -->
-    <section id="about" class="about-section">
-        <div class="container">
-            <div class="section-header reveal-up">
-                <span class="section-tag"><i class="fa-solid fa-user"></i> Tentang Saya</span>
-                <h2 class="section-title">Kombinasi Unik antara<br><span class="gradient-text">Dunia Fisik & Digital</span></h2>
-            </div>
-
-            <div class="about-grid">
-                <div class="about-card glass-card reveal-up" style="animation-delay: 0.1s;">
-                    <div class="card-icon-wrap">
-                        <i class="fa-solid fa-microchip"></i>
+    <main class="flex-grow">
+        <!-- Hero / Banner Section (Features Large Frame Profile Photo) -->
+        <section class="py-16 md:py-24 border-b border-slate-800/60">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Hero Text (Left 7 Cols) -->
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        Hardware & Software Developer
                     </div>
-                    <h3>Hardware & IoT</h3>
-                    <p>Merancang dan memprogram mikrokontroler seperti Arduino, ESP32, dan Raspberry Pi. Membangun sistem IoT dengan sensor, aktuator, dan komunikasi real-time.</p>
-                    <div class="card-glow"></div>
-                </div>
 
-                <div class="about-card glass-card reveal-up" style="animation-delay: 0.2s;">
-                    <div class="card-icon-wrap purple">
-                        <i class="fa-solid fa-laptop-code"></i>
-                    </div>
-                    <h3>Software Development</h3>
-                    <p>Membangun aplikasi web dan mobile yang responsif, intuitif, dan modern menggunakan teknologi terkini dengan perhatian pada detail UI/UX.</p>
-                    <div class="card-glow purple"></div>
-                </div>
+                    <h1 class="text-3xl sm:text-5xl font-extrabold text-slate-100 tracking-tight leading-tight">
+                        Menggabungkan <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">Kodingan & Perangkat Keras</span> Menjadi Solusi Nyata.
+                    </h1>
 
-                <div class="about-card glass-card reveal-up" style="animation-delay: 0.3s;">
-                    <div class="card-icon-wrap emerald">
-                        <i class="fa-solid fa-link"></i>
-                    </div>
-                    <h3>System Integration</h3>
-                    <p>Menghubungkan perangkat keras ke cloud/server melalui API dan protokol IoT, menciptakan solusi end-to-end yang lengkap dan terukur.</p>
-                    <div class="card-glow emerald"></div>
-                </div>
-            </div>
-        </div>
-    </section>
+                    <p class="text-slate-400 text-base sm:text-lg leading-relaxed max-w-xl">
+                        Saya merancang rangkaian <strong>IoT & Mikrokontroler</strong> serta memprogram aplikasi <strong>Web & Mobile</strong> yang responsif. Berfokus pada sistem yang efisien dan tampilan yang bersih.
+                    </p>
 
-    <!-- ==================== SKILLS SECTION ==================== -->
-    <section id="skills" class="skills-section">
-        <div class="container">
-            <div class="section-header reveal-up">
-                <span class="section-tag"><i class="fa-solid fa-wrench"></i> Keahlian</span>
-                <h2 class="section-title">Tools & Teknologi<br><span class="gradient-text">yang Saya Kuasai</span></h2>
-            </div>
-
-            <div class="skills-grid">
-                <!-- Hardware Skills -->
-                <div class="skill-group glass-card reveal-up" style="animation-delay: 0.1s;">
-                    <h3 class="skill-group-title">
-                        <span class="skill-icon amber"><i class="fa-solid fa-bolt"></i></span>
-                        Hardware & IoT
-                    </h3>
-                    <div class="skill-items">
-                        <div class="skill-item">
-                            <div class="skill-dot amber"></div>
-                            <span>Arduino</span>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-dot amber"></div>
-                            <span>ESP32 / ESP8266</span>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-dot amber"></div>
-                            <span>Raspberry Pi</span>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-dot amber"></div>
-                            <span>Sensor & Actuator</span>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-dot amber"></div>
-                            <span>C / C++ Embedded</span>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-dot amber"></div>
-                            <span>MQTT / HTTP</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Software Skills -->
-                <div class="skill-group glass-card reveal-up" style="animation-delay: 0.2s;">
-                    <h3 class="skill-group-title">
-                        <span class="skill-icon blue"><i class="fa-solid fa-code"></i></span>
-                        Software & Coding
-                    </h3>
-                    <div class="skill-items">
-                        <div class="skill-item">
-                            <div class="skill-dot blue"></div>
-                            <span>HTML5 & CSS3</span>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-dot blue"></div>
-                            <span>JavaScript</span>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-dot blue"></div>
-                            <span>Flutter & Dart</span>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-dot blue"></div>
-                            <span>Git & GitHub</span>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-dot blue"></div>
-                            <span>Database (SQL / Firebase)</span>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-dot blue"></div>
-                            <span>REST APIs</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ==================== PROJECTS SECTION ==================== -->
-    <section id="projects" class="projects-section">
-        <div class="container">
-            <div class="section-header reveal-up">
-                <span class="section-tag"><i class="fa-solid fa-folder-open"></i> Portofolio</span>
-                <h2 class="section-title">Proyek yang Telah<br><span class="gradient-text">Saya Bangun</span></h2>
-            </div>
-
-            <!-- Filter -->
-            <div class="project-filters reveal-up">
-                <button class="filter-btn active" data-filter="all">Semua</button>
-                <button class="filter-btn" data-filter="hardware"><i class="fa-solid fa-microchip"></i> Hardware</button>
-                <button class="filter-btn" data-filter="software"><i class="fa-solid fa-laptop-code"></i> Software</button>
-            </div>
-
-            <!-- Projects Grid -->
-            <div class="projects-grid" id="projects-grid">
-
-                <!-- Project 1: Hardware -->
-                <div class="project-card glass-card reveal-up" data-category="hardware">
-                    <div class="project-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80" alt="Smart Home IoT" class="project-img" loading="lazy">
-                        <div class="project-overlay">
-                            <span class="project-badge hardware"><i class="fa-solid fa-microchip"></i> Hardware</span>
-                        </div>
-                    </div>
-                    <div class="project-info">
-                        <h3>Smart Home Monitoring IoT</h3>
-                        <p>Sistem pemantauan suhu, kelembaban, dan kontrol lampu jarak jauh berbasis ESP32 dan Web Dashboard real-time.</p>
-                        <div class="project-tech-tags">
-                            <span>ESP32</span><span>C++</span><span>MQTT</span><span>Web Dashboard</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 2: Software -->
-                <div class="project-card glass-card reveal-up" data-category="software" style="animation-delay: 0.1s;">
-                    <div class="project-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80" alt="Aplikasi Mobile" class="project-img" loading="lazy">
-                        <div class="project-overlay">
-                            <span class="project-badge software"><i class="fa-solid fa-code"></i> Software</span>
-                        </div>
-                    </div>
-                    <div class="project-info">
-                        <h3>Aplikasi Manajemen Tugas</h3>
-                        <p>Aplikasi mobile modern untuk mencatat dan mengelola aktivitas harian dengan pengingat otomatis dan UI yang intuitif.</p>
-                        <div class="project-tech-tags">
-                            <span>Flutter</span><span>Dart</span><span>SQLite</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 3: Hardware -->
-                <div class="project-card glass-card reveal-up" data-category="hardware" style="animation-delay: 0.2s;">
-                    <div class="project-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1563770660941-20978e870e26?auto=format&fit=crop&w=600&q=80" alt="Robot Line Follower" class="project-img" loading="lazy">
-                        <div class="project-overlay">
-                            <span class="project-badge hardware"><i class="fa-solid fa-microchip"></i> Hardware</span>
-                        </div>
-                    </div>
-                    <div class="project-info">
-                        <h3>Robot Line Follower</h3>
-                        <p>Robot berbasis Arduino UNO dengan sensor ultrasonik dan inframerah untuk navigasi mandiri dan obstacle avoidance.</p>
-                        <div class="project-tech-tags">
-                            <span>Arduino</span><span>Ultrasonic</span><span>L298N</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 4: Software -->
-                <div class="project-card glass-card reveal-up" data-category="software" style="animation-delay: 0.3s;">
-                    <div class="project-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80" alt="Company Profile Website" class="project-img" loading="lazy">
-                        <div class="project-overlay">
-                            <span class="project-badge software"><i class="fa-solid fa-code"></i> Software</span>
-                        </div>
-                    </div>
-                    <div class="project-info">
-                        <h3>Website Company Profile</h3>
-                        <p>Website landing page responsif, bersih, dan siap di-deploy ke Vercel dengan performa dan aksesibilitas tinggi.</p>
-                        <div class="project-tech-tags">
-                            <span>HTML5</span><span>CSS3</span><span>JavaScript</span>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- ==================== CONTACT SECTION ==================== -->
-    <section id="contact" class="contact-section">
-        <div class="container">
-            <div class="contact-wrapper glass-card reveal-up">
-                <div class="contact-content">
-                    <span class="section-tag"><i class="fa-solid fa-handshake"></i> Kolaborasi</span>
-                    <h2 class="section-title">Punya Ide Proyek?<br><span class="gradient-text">Mari Wujudkan Bersama!</span></h2>
-                    <p class="contact-desc">Baik itu proyek Hardware, IoT, atau Aplikasi Software—saya selalu terbuka untuk berdiskusi dan berkolaborasi.</p>
-                    <div class="contact-buttons">
-                        <a href="mailto:emailanda@example.com" class="btn btn-primary">
-                            <i class="fa-solid fa-envelope"></i> Kirim Email
+                    <!-- Buttons CTA -->
+                    <div class="flex flex-wrap gap-4 pt-2">
+                        <a href="#projects" class="px-6 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm flex items-center gap-2 transition-all shadow-lg shadow-emerald-500/20">
+                            <i class="fa-solid fa-layer-group"></i> Lihat Portofolio
                         </a>
-                        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="btn btn-glass">
-                            <i class="fa-brands fa-github"></i> GitHub
-                        </a>
-                        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="btn btn-glass">
-                            <i class="fa-brands fa-linkedin"></i> LinkedIn
+                        <a href="#contact" class="px-6 py-3.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold text-sm flex items-center gap-2 transition-all">
+                            <i class="fa-solid fa-paper-plane"></i> Hubungi Saya
                         </a>
                     </div>
+
+                    <!-- Quick Tech Badges -->
+                    <div class="pt-6 border-t border-slate-800/80 flex flex-wrap items-center gap-6 text-xs text-slate-400 font-mono">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-microchip text-emerald-400"></i> ESP32 / Arduino
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-laptop-code text-cyan-400"></i> Web & Mobile Apps
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-wifi text-teal-400"></i> IoT & Sensors
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero Banner Profile Photo (Right 5 Cols - Large Display) -->
+                <div class="lg:col-span-5 flex justify-center">
+                    <div class="relative w-full max-w-md">
+                        <!-- Frame Outer Accent -->
+                        <div class="absolute -inset-1.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-3xl blur-sm opacity-30"></div>
+                        
+                        <!-- Main Frame -->
+                        <div class="relative rounded-2xl bg-dark-800 border border-slate-700 p-3 shadow-2xl overflow-hidden group">
+                            <div class="relative aspect-[4/5] rounded-xl overflow-hidden bg-slate-900">
+                                <!-- Foto Profil Utama (Anda bisa ganti file foto di folder assets/) -->
+                                <img src="assets/avatar.svg" alt="Foto Profil" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" id="hero-img">
+                                
+                                <!-- Floating Overlay Info Badges -->
+                                <div class="absolute bottom-3 left-3 right-3 p-3 rounded-lg bg-dark-900/90 backdrop-blur-md border border-slate-700/80 flex items-center justify-between">
+                                    <div>
+                                        <p class="text-xs font-mono text-slate-400">Status</p>
+                                        <p class="text-xs font-bold text-slate-200">Open for Projects</p>
+                                    </div>
+                                    <div class="px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-400 text-xs font-mono border border-emerald-500/30">
+                                        Active
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-16 border-b border-slate-800/60">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6">
+                <div class="mb-12">
+                    <span class="text-xs font-mono text-emerald-400 tracking-wider uppercase">01. Tentang Saya</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-100 mt-1">Latar Belakang & Spesialisasi</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Card 1 -->
+                    <div class="p-6 rounded-2xl bg-dark-800/60 border border-slate-800 hover:border-slate-700 transition-all space-y-3">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-lg">
+                            <i class="fa-solid fa-microchip"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-200 text-lg">Proyek Hardware</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Pengalaman merakit mikrokontroler (Arduino, ESP32, Raspberry Pi), rangkaian sirkuit elektronik, dan pembacaan sensor secara presisi.
+                        </p>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="p-6 rounded-2xl bg-dark-800/60 border border-slate-800 hover:border-slate-700 transition-all space-y-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-lg">
+                            <i class="fa-solid fa-code"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-200 text-lg">Pemrograman Software</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Menulis kode yang rapi untuk aplikasi Web dan Mobile. Memastikan tampilan responsif, navigasi intuitif, dan struktur data aman.
+                        </p>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="p-6 rounded-2xl bg-dark-800/60 border border-slate-800 hover:border-slate-700 transition-all space-y-3">
+                        <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 text-lg">
+                            <i class="fa-solid fa-network-wired"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-200 text-lg">Konektivitas IoT</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Menghubungkan alat hardware ke internet menggunakan protokol MQTT/HTTP untuk pemantauan data real-time via dashboard web.
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container footer-container">
-            <p>&copy; 2026 Portofolio. Dibuat dengan <i class="fa-solid fa-heart" style="color: #f43f5e;"></i> dan Three.js</p>
-            <a href="#hero" class="back-to-top">
-                <i class="fa-solid fa-arrow-up"></i>
+        <!-- Skills Matrix Section -->
+        <section id="skills" class="py-16 border-b border-slate-800/60 bg-slate-950/40">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6">
+                <div class="mb-12">
+                    <span class="text-xs font-mono text-emerald-400 tracking-wider uppercase">02. Stack Teknologi</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-100 mt-1">Keahlian Utama</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Hardware Tech -->
+                    <div class="p-6 sm:p-8 rounded-2xl bg-dark-800/80 border border-slate-800">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-9 h-9 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                                <i class="fa-solid fa-bolt"></i>
+                            </div>
+                            <h3 class="font-bold text-slate-100 text-xl">Hardware & Embedded</h3>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-2.5">
+                            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700/70 text-slate-300 text-xs font-mono">Arduino / C++</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700/70 text-slate-300 text-xs font-mono">ESP32 / ESP8266</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700/70 text-slate-300 text-xs font-mono">Raspberry Pi</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700/70 text-slate-300 text-xs font-mono">Sensor Suhu & Jarak</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700/70 text-slate-300 text-xs font-mono">Motor Driver L298N</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700/70 text-slate-300 text-xs font-mono">MQTT Protocol</span>
+                        </div>
+                    </div>
+
+                    <!-- Software Tech -->
+                    <div class="p-6 sm:p-8 rounded-2xl bg-dark-800/80 border border-slate-800">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                                <i class="fa-solid fa-code"></i>
+                            </div>
+                            <h3 class="font-bold text-slate-100 text-xl">Software & Web</h3>
+                        </div>
+
+                        <div class="flex flex-wrap gap-2.5">
+                            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700/70 text-slate-300 text-xs font-mono">HTML5 & CSS3</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700/70 text-slate-300 text-xs font-mono">Tailwind CSS</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700/70 text-slate-300 text-xs font-mono">JavaScript (ES6+)</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700/70 text-slate-300 text-xs font-mono">Flutter & Dart</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700/70 text-slate-300 text-xs font-mono">REST APIs</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700/70 text-slate-300 text-xs font-mono">Git & GitHub</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section (Categorized Hardware & Software) -->
+        <section id="projects" class="py-16 border-b border-slate-800/60">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6">
+                
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
+                    <div>
+                        <span class="text-xs font-mono text-emerald-400 tracking-wider uppercase">03. Portofolio Karya</span>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-slate-100 mt-1">Daftar Proyek Utama</h2>
+                    </div>
+
+                    <!-- Filter Tabs -->
+                    <div class="flex items-center gap-2 p-1.5 rounded-xl bg-dark-800 border border-slate-800 self-start">
+                        <button class="filter-btn active px-4 py-2 rounded-lg text-xs font-semibold text-slate-200 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-all" data-filter="all">Semua</button>
+                        <button class="filter-btn px-4 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 transition-all" data-filter="hardware">Hardware</button>
+                        <button class="filter-btn px-4 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 transition-all" data-filter="software">Software</button>
+                    </div>
+                </div>
+
+                <!-- Project Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="projects-container">
+
+                    <!-- Project 1: Hardware -->
+                    <div class="project-card rounded-2xl bg-dark-800/80 border border-slate-800 overflow-hidden hover:border-slate-700 transition-all flex flex-col" data-category="hardware">
+                        <div class="relative aspect-video overflow-hidden bg-slate-900">
+                            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80" alt="Smart Home IoT" class="w-full h-full object-cover">
+                            <span class="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30 backdrop-blur-md">
+                                <i class="fa-solid fa-microchip mr-1"></i> Hardware
+                            </span>
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-100">Smart Home Monitoring IoT</h3>
+                                <p class="text-slate-400 text-sm mt-2 leading-relaxed">
+                                    Sistem pemantauan kondisi lingkungan (suhu, kelembaban, dan kontrol daya saklar) jarak jauh berbasis mikrokontroler ESP32 dengan web dashboard interaktif.
+                                </p>
+                            </div>
+                            <div class="pt-4 border-t border-slate-800 flex flex-wrap gap-2 text-xs font-mono text-slate-400">
+                                <span class="px-2.5 py-1 rounded bg-slate-900 border border-slate-800">ESP32</span>
+                                <span class="px-2.5 py-1 rounded bg-slate-900 border border-slate-800">C++</span>
+                                <span class="px-2.5 py-1 rounded bg-slate-900 border border-slate-800">MQTT</span>
+                                <span class="px-2.5 py-1 rounded bg-slate-900 border border-slate-800">Web Dashboard</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 2: Software -->
+                    <div class="project-card rounded-2xl bg-dark-800/80 border border-slate-800 overflow-hidden hover:border-slate-700 transition-all flex flex-col" data-category="software">
+                        <div class="relative aspect-video overflow-hidden bg-slate-900">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="Aplikasi Task Manager" class="w-full h-full object-cover">
+                            <span class="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 backdrop-blur-md">
+                                <i class="fa-solid fa-code mr-1"></i> Software
+                            </span>
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-100">Aplikasi Mobile Task Manager</h3>
+                                <p class="text-slate-400 text-sm mt-2 leading-relaxed">
+                                    Aplikasi produktivitas berbasis mobile untuk mengelola jadwal harian, statistik penyelesaian tugas, dan notifikasi pengingat lokal.
+                                </p>
+                            </div>
+                            <div class="pt-4 border-t border-slate-800 flex flex-wrap gap-2 text-xs font-mono text-slate-400">
+                                <span class="px-2.5 py-1 rounded bg-slate-900 border border-slate-800">Flutter</span>
+                                <span class="px-2.5 py-1 rounded bg-slate-900 border border-slate-800">Dart</span>
+                                <span class="px-2.5 py-1 rounded bg-slate-900 border border-slate-800">SQLite</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 3: Hardware -->
+                    <div class="project-card rounded-2xl bg-dark-800/80 border border-slate-800 overflow-hidden hover:border-slate-700 transition-all flex flex-col" data-category="hardware">
+                        <div class="relative aspect-video overflow-hidden bg-slate-900">
+                            <img src="https://images.unsplash.com/photo-1563770660941-20978e870e26?auto=format&fit=crop&w=800&q=80" alt="Robot Line Follower" class="w-full h-full object-cover">
+                            <span class="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30 backdrop-blur-md">
+                                <i class="fa-solid fa-microchip mr-1"></i> Hardware
+                            </span>
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-100">Robot Line Follower & Obstacle Detection</h3>
+                                <p class="text-slate-400 text-sm mt-2 leading-relaxed">
+                                    Proyek robotika otonom menggunakan mikrokontroler Arduino Uno, sensor ultrasonik HC-SR04, dan modul infrared pembaca garis lintasan.
+                                </p>
+                            </div>
+                            <div class="pt-4 border-t border-slate-800 flex flex-wrap gap-2 text-xs font-mono text-slate-400">
+                                <span class="px-2.5 py-1 rounded bg-slate-900 border border-slate-800">Arduino Uno</span>
+                                <span class="px-2.5 py-1 rounded bg-slate-900 border border-slate-800">Sensor Ultrasonik</span>
+                                <span class="px-2.5 py-1 rounded bg-slate-900 border border-slate-800">Motor Driver L298N</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 4: Software -->
+                    <div class="project-card rounded-2xl bg-dark-800/80 border border-slate-800 overflow-hidden hover:border-slate-700 transition-all flex flex-col" data-category="software">
+                        <div class="relative aspect-video overflow-hidden bg-slate-900">
+                            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80" alt="Company Profile Web" class="w-full h-full object-cover">
+                            <span class="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 backdrop-blur-md">
+                                <i class="fa-solid fa-code mr-1"></i> Software
+                            </span>
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-100">Website Landing Page Responsif</h3>
+                                <p class="text-slate-400 text-sm mt-2 leading-relaxed">
+                                    Halaman portofolio dan profil perusahaan modern yang cepat, ramah SEO, dan siap langsung di-deploy di platform cloud seperti Vercel.
+                                </p>
+                            </div>
+                            <div class="pt-4 border-t border-slate-800 flex flex-wrap gap-2 text-xs font-mono text-slate-400">
+                                <span class="px-2.5 py-1 rounded bg-slate-900 border border-slate-800">HTML5</span>
+                                <span class="px-2.5 py-1 rounded bg-slate-900 border border-slate-800">Tailwind CSS</span>
+                                <span class="px-2.5 py-1 rounded bg-slate-900 border border-slate-800">JavaScript</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-20">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+                <div class="p-8 sm:p-12 rounded-3xl bg-gradient-to-b from-dark-800 to-slate-900 border border-slate-800 space-y-6">
+                    <span class="text-xs font-mono text-emerald-400 tracking-wider uppercase">04. Mari Berkomunikasi</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-100 tracking-tight">
+                        Punya Ide Proyek Hardware atau Kodingan?
+                    </h2>
+                    <p class="text-slate-400 text-base max-w-xl mx-auto leading-relaxed">
+                        Saya siap berdiskusi mengenai proyek kustom, pembuatan IoT, atau pengembangan aplikasi web & mobile.
+                    </p>
+
+                    <div class="pt-4 flex flex-wrap items-center justify-center gap-4">
+                        <a href="mailto:emailanda@example.com" class="px-6 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm flex items-center gap-2 transition-all">
+                            <i class="fa-solid fa-envelope"></i> Kirim Email Langsung
+                        </a>
+                        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="px-6 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold text-sm flex items-center gap-2 transition-all">
+                            <i class="fa-brands fa-github"></i> GitHub Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Simple Clean Footer -->
+    <footer class="py-8 border-t border-slate-800/80 bg-dark-900 text-slate-400 text-xs font-mono">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p>&copy; 2026 Developer Portfolio. HTML, Tailwind CSS & JS.</p>
+            <a href="#" class="hover:text-emerald-400 transition-colors flex items-center gap-1">
+                Kembali ke Atas <i class="fa-solid fa-arrow-up text-xs"></i>
             </a>
         </div>
     </footer>
 
-    <!-- Three.js CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Minimal JS Script (<50 lines) -->
     <script src="script.js"></script>
 </body>
 </html>
