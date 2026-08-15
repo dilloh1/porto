@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portofolio Saya - Hardware & Software Developer</title>
+    <meta name="description" content="Portofolio Pribadi - Hardware & Coding Developer">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <span class="logo-icon"><i class="fa-solid fa-code"></i></span>
+                <span class="logo-text">Portofolio</span>
+            </a>
+            
+            <nav class="nav-links" id="nav-links">
+                <a href="#hero" class="nav-link active">Beranda</a>
+                <a href="#about" class="nav-link">Tentang Saya</a>
+                <a href="#skills" class="nav-link">Keahlian</a>
+                <a href="#projects" class="nav-link">Proyek</a>
+                <a href="#contact" class="nav-link">Kontak</a>
+            </nav>
+
+            <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Navigation">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero / Banner Section -->
+    <section id="hero" class="hero-section">
+        <div class="container hero-container">
+            <!-- Large Profile Photo Container -->
+            <div class="hero-avatar-wrapper">
+                <div class="avatar-glow"></div>
+                <div class="avatar-card">
+                    <!-- Foto Profil Besar (Bisa diganti dengan file foto Anda di folder assets/) -->
+                    <img src="assets/avatar.svg" alt="Foto Profil" class="avatar-img" id="profile-img">
+                    <div class="avatar-badge">
+                        <i class="fa-solid fa-bolt"></i> Ready to Build
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Intro Text -->
+            <div class="hero-content">
+                <div class="hero-subtitle">
+                    <span class="badge">Selamat Datang</span>
+                </div>
+                <h1 class="hero-title">Halo, Saya <span class="gradient-text">Developer & Maker</span></h1>
+                <p class="hero-description">
+                    Saya mengembangkan solusi berbasis **Software & Hardware**. Berpengalaman membuat aplikasi kodingan modern serta merakit perangkat keras berbasis IoT dan elektronika.
+                </p>
+
+                <div class="hero-cta">
+                    <a href="#projects" class="btn btn-primary">
+                        <i class="fa-solid fa-rocket"></i> Lihat Proyek
+                    </a>
+                    <a href="#contact" class="btn btn-secondary">
+                        <i class="fa-solid fa-envelope"></i> Hubungi Saya
+                    </a>
+                </div>
+
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">Hardware</span>
+                        <span class="stat-label">IoT & Elektronika</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-number">Software</span>
+                        <span class="stat-label">Web & Mobile Apps</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">Tentang Saya</h2>
+                <p class="section-subtitle">Kombinasi antara dunia kodingan dan perangkat keras</p>
+            </div>
+
+            <div class="about-grid">
+                <div class="about-card">
+                    <div class="card-icon"><i class="fa-solid fa-microchip"></i></div>
+                    <h3>Dunia Hardware</h3>
+                    <p>Merancang dan memprogram mikrokontroler (Arduino, ESP32, Raspberry Pi), sensor IoT, dan rangkaian elektronik sederhana maupun kompleks.</p>
+                </div>
+
+                <div class="about-card">
+                    <div class="card-icon"><i class="fa-solid fa-laptop-code"></i></div>
+                    <h3>Dunia Software</h3>
+                    <p>Membangun aplikasi web dan mobile yang responsif, bersih, dan mudah digunakan dengan logika pemrograman yang terstruktur.</p>
+                </div>
+
+                <div class="about-card">
+                    <div class="card-icon"><i class="fa-solid fa-gears"></i></div>
+                    <h3>Integrasi System</h3>
+                    <p>Menghubungkan perangkat keras IoT ke server/web dashboard secara real-time untuk pemantauan dan kontrol jarak jauh.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="skills-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">Keahlian & Teknologi</h2>
+                <p class="section-subtitle">Tools dan bahasa pemrograman yang sering saya gunakan</p>
+            </div>
+
+            <div class="skills-wrapper">
+                <!-- Hardware Skills -->
+                <div class="skill-category">
+                    <h3 class="category-title"><i class="fa-solid fa-cpu"></i> Hardware & IoT</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag"><i class="fa-solid fa-check"></i> Arduino</span>
+                        <span class="skill-tag"><i class="fa-solid fa-check"></i> ESP32 / ESP8266</span>
+                        <span class="skill-tag"><i class="fa-solid fa-check"></i> Raspberry Pi</span>
+                        <span class="skill-tag"><i class="fa-solid fa-check"></i> Sensor & Actuator</span>
+                        <span class="skill-tag"><i class="fa-solid fa-check"></i> C / C++ (Embedded)</span>
+                        <span class="skill-tag"><i class="fa-solid fa-check"></i> MQTT / HTTP Protocol</span>
+                    </div>
+                </div>
+
+                <!-- Software Skills -->
+                <div class="skill-category">
+                    <h3 class="category-title"><i class="fa-solid fa-code"></i> Software & Coding</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag"><i class="fa-brands fa-html5"></i> HTML5 & CSS3</span>
+                        <span class="skill-tag"><i class="fa-brands fa-js"></i> JavaScript</span>
+                        <span class="skill-tag"><i class="fa-brands fa-flutter"></i> Flutter & Dart</span>
+                        <span class="skill-tag"><i class="fa-brands fa-git-alt"></i> Git & GitHub</span>
+                        <span class="skill-tag"><i class="fa-solid fa-database"></i> Database (SQL / Firebase)</span>
+                        <span class="skill-tag"><i class="fa-solid fa-globe"></i> REST APIs</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="projects-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">Portofolio Proyek</h2>
+                <p class="section-subtitle">Kumpulan hasil karya proyek Hardware dan Coding</p>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="project-filters">
+                <button class="filter-btn active" data-filter="all">Semua Proyek</button>
+                <button class="filter-btn" data-filter="hardware"><i class="fa-solid fa-microchip"></i> Hardware</button>
+                <button class="filter-btn" data-filter="software"><i class="fa-solid fa-laptop-code"></i> Coding / Software</button>
+            </div>
+
+            <!-- Projects Grid -->
+            <div class="projects-grid" id="projects-grid">
+                
+                <!-- Project 1: Hardware -->
+                <div class="project-card" data-category="hardware">
+                    <div class="project-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80" alt="Proyek IoT Monitoring" class="project-img">
+                        <span class="project-category-badge hardware"><i class="fa-solid fa-microchip"></i> Hardware</span>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Smart Home Monitoring IoT</h3>
+                        <p class="project-desc">Sistem pemantauan suhu, kelembaban, dan kontrol lampu jarak jauh berbasis ESP32 dan Dashboard Web.</p>
+                        <div class="project-tech">
+                            <span>ESP32</span>
+                            <span>C++</span>
+                            <span>MQTT</span>
+                            <span>Web Dashboard</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2: Software -->
+                <div class="project-card" data-category="software">
+                    <div class="project-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80" alt="Aplikasi Mobile" class="project-img">
+                        <span class="project-category-badge software"><i class="fa-solid fa-code"></i> Software</span>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Aplikasi Manajemen Tugas</h3>
+                        <p class="project-desc">Aplikasi mobile modern untuk mencatat dan mengelola aktivitas harian dengan pengingat otomatis.</p>
+                        <div class="project-tech">
+                            <span>Flutter</span>
+                            <span>Dart</span>
+                            <span>SQLite</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3: Hardware -->
+                <div class="project-card" data-category="hardware">
+                    <div class="project-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1563770660941-20978e870e26?auto=format&fit=crop&w=600&q=80" alt="Robotika Sederhana" class="project-img">
+                        <span class="project-category-badge hardware"><i class="fa-solid fa-microchip"></i> Hardware</span>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Robot Line Follower & Obstacle Avoidance</h3>
+                        <p class="project-desc">Robot berbasis Arduino UNO dengan sensor ultrasonik dan inframerah untuk navigasi mandiri.</p>
+                        <div class="project-tech">
+                            <span>Arduino</span>
+                            <span>Ultrasonic Sensor</span>
+                            <span>Motor Driver L298N</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 4: Software -->
+                <div class="project-card" data-category="software">
+                    <div class="project-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80" alt="Web Portofolio" class="project-img">
+                        <span class="project-category-badge software"><i class="fa-solid fa-code"></i> Software</span>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Website Company Profile</h3>
+                        <p class="project-desc">Website landing page yang bersih, responsif, dan siap di-deploy ke Vercel dengan optimasi tinggi.</p>
+                        <div class="project-tech">
+                            <span>HTML5</span>
+                            <span>CSS3</span>
+                            <span>JavaScript</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <div class="contact-card">
+                <div class="contact-content text-center">
+                    <h2 class="section-title">Mari Berkolaborasi!</h2>
+                    <p class="section-subtitle">Punya ide proyek Hardware atau Kodingan? Jangan ragu untuk menghubungi saya.</p>
+                    
+                    <div class="contact-buttons">
+                        <a href="mailto:emailanda@example.com" class="btn btn-primary">
+                            <i class="fa-solid fa-envelope"></i> Kirim Email
+                        </a>
+                        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+                            <i class="fa-brands fa-github"></i> GitHub Saya
+                        </a>
+                        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+                            <i class="fa-brands fa-linkedin"></i> LinkedIn
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <p>&copy; 2026 Portofolio Saya. Built with HTML, CSS & JavaScript.</p>
+            <div class="footer-links">
+                <a href="#hero">Atas <i class="fa-solid fa-arrow-up"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
